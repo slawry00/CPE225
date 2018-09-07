@@ -1,0 +1,29 @@
+; Spencer Lawry
+; Section 05/06
+; Part 3a
+; R0 holds the value of ("the x3100 number" AND "0001 constantly left shifted")
+; R1 holds the current count of 1's in "the x3100 number"
+; R2 holds the counter for the loop starting at 16 and going down 
+; R3 holds "the x3100 number"(not an address)
+; R4 holds "0001 being left shifted each iteration"
+
+
+0011 0000 0000 0000 ; start at x3000
+0101 0010 0110 0000 ; reset R1
+0101 1001 0010 0000 ; reset R4
+0101 0100 1010 0000 ; reset R2 
+0001 0100 1010 1111 ; set R2 equal to 15
+0001 0100 1010 0001 ; add 1 to R2 to make it 16 (was limited by 4 bits when creating it)
+0001 1001 0010 0001 ; set R4 equal to 1
+0010 0110 1111 1001 ; load the value of memory location x3100 into R3
+0101 0001 0000 0011 ; set R0 equal to (R4 AND R3) -- 1 time
+0000 1010 0000 0111 ; If R0 isn't 0, (it is neg or pos), branch to the add one -- 1 time
+0001 1001 0000 0100 ; Double R4 (shift 1 to the left) -- start of loop
+0101 0001 0000 0011 ; Set R0 equal to (R3 AND R4) 
+0000 1010 0000 0100 ; If R0 isn't 0, (it is neg or pos), branch to the add one
+0001 0100 1011 1111 ; Take away 1 from R2 to reduce loop
+0000 0011 1111 1011 ; if R2 is positive, branch back to beginning of loop
+0011 0010 1111 0010 ; Set memory location x3101 equal to final R1 value
+1111 0000 0010 0101 ; HALT
+0001 0010 0110 0001 ; Add 1 to R1. This branch is used to increment R1
+0000 1111 1111 1010 ; Branch back to reducing R2 line
